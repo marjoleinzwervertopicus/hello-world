@@ -1,0 +1,86 @@
+--- 
+title: "Productie"
+author: "Devise"
+params:
+  client: "rav_drenthe"
+format: 
+  dashboard:
+    orientation: rows
+    scrolling: true
+    theme: cosmo
+    expandable: false
+server: shiny
+---
+
+<script src="https://kit.fontawesome.com/cbd54b6f03.js" crossorigin="anonymous"></script>
+
+
+```{js, code = readLines(paste0(rprojroot::find_rstudio_root_file(), "/Library/rmd/dashboard_qmd.js"))}
+```
+
+```{css}
+.quarto-dashboard .card .card-body {
+  z-index: unset !important;
+}
+
+div[data-title="Productie"] .form-group.shiny-input-container {
+  flex-direction: row;
+  align-items: baseline;
+}
+
+div[data-title="Productie"] label.control-label {
+  padding-right: 0.4em;
+}
+
+div[data-title="Gemiddelde tijdsduren"] .cell-output-display.html-fill-item.html-fill-container.no-overflow-x {
+  flex: unset;
+}
+
+```
+
+```{r}
+#| context: setup
+#| include: FALSE
+
+source(paste0(rprojroot::find_rstudio_root_file(), "/Library/rmd/params.R"), local = T) 
+setwd(rprojroot::find_rstudio_root_file())
+source("Library/rmd/init_dashboard.R")
+db <- import("Library/database/db.R")
+
+config <- list(
+  client = params$client
+)
+if(config$client == "rav_drenthe") {
+  config$province <- "Drenthe"
+} else if(config$client == "rav_fryslan") {
+  config$province <- "Friesland"
+}
+
+db_con <- db(database = config$client, tables = "ambulance_task_edaz", single_table_name = F)
+```
+
+
+
+```{r}
+highchartOutput("graph_aantal_inzetten")
+```
+
+```{r}
+#| context: server
+
+output$graph_aantal_inzetten <- renderHighchart({
+  db_con$count(time_column = "receive_task_datetime",
+               time = "monthly") |>
+    arrange(x) |>
+    visualize$graph(interactive = T,
+                    theme = list(spline = list(marker = T)),
+                    types = list(spline = T),
+                    options = list(navigator = T,
+                                   export_enabled = T),
+                    labels = list(title = texts$add_date_zoom(text = "Aantal inzetten",
+                                                              date_zoom = "monthly"),
+                                  x = "",
+                                  y = "Aantal inzetten"))
+})
+
+```

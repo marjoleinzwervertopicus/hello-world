@@ -1,0 +1,300 @@
+---
+title: "Analyse"
+output: html_document
+runtime: shiny_prerendered 
+
+---
+
+```{r, child= "~/RStudio/reports/Library/rmd/dashboard_init_chunks.Rmd", include=FALSE, echo=FALSE, results='hide',message=FALSE}
+```
+
+```{r setup, include=FALSE, echo=FALSE, results='hide',message=FALSE}
+setwd("~/RStudio/reports")
+source("Library/rmd/init_dashboard.R")
+
+Sys.setlocale(locale = "en_US.utf8")
+source("Library/init_analysis.R")
+library(knitr)
+library(highcharter)
+
+data_per_uur <- readRDS("/home/shared/data/clients/proigia/cleaned_data_per_uur.rds")
+train_data <- readRDS("/home/shared/data/clients/proigia/train_data_per_uur.rds")
+test_data <- readRDS("/home/shared/data/clients/proigia/test_data_per_uur.rds")
+
+```
+
+
+
+Openingtijden zijn doordeweeks van 17:00 tot 8:00, in uren is dit 17 t/m 23 en 0 t/m 7
+
+
+### alle data
+```{r context="server"}
+output$all_data <- renderHighchart({
+  data_per_uur %>%
+    mutate(x = format(datumtijd, format = "%Y-%m-%d %H")) %>%
+    select(x = x, y = bellers_totaal) %>%
+    visualize$graph(interactive = T, types = list(line = T))
+  })
+```
+
+```{r}
+highchartOutput("all_data")
+```
+
+
+### Vergelijking dag van de week
+
+```{r context="server"}
+output$hourly_means <- renderHighchart({
+  data_per_uur %>%
+    filter(is_open) %>%
+    filter(!is_feestdag) %>%
+    group_by(datum_weekdag, datum_uur) %>%
+    summarise(y = mean(bellers_totaal, na.rm = T)) %>%
+    select(x = datum_uur, y = y, group = datum_weekdag) %>%
+    visualize$graph(interactive = T, labels = list(x = "uur van de dag", y = "gemiddelde aantal calls"), types = list(line = TRUE))
+  })
+```
+
+```{r}
+highchartOutput("weekday_means")
+```
+
+```{r context="server"}
+output$weekday_means <- renderHighchart({
+  data_per_uur %>%
+    filter(is_open) %>%
+    filter(!is_feestdag) %>%
+    group_by(datum_weekdag) %>%
+    summarise(y = mean(bellers_totaal, na.rm = T)) %>%
+    select(x = datum_weekdag, y = y) %>%
+    visualize$graph(interactive = T, labels = list(x = "dag van de week", y = "gemiddelde aantal calls"), types = list(bar = TRUE))
+  })
+```
+
+```{r}
+highchartOutput("hourly_means")
+```
+
+
+
+
+
+### Analyse feestdagen
+Hypothese: feestdagen die in het weekend vallen zorgen niet of nauwelijks voor een verandering tegenover het gemiddelde voor die dag van de week.
+Feestdagen die door de weeks vallen wel
+
+```{r}
+highchartOutput("feestdag_diff")
+```
+
+```{r context="server"}
+output$feestdag_diff <- renderHighchart({
+day_hour_means <- data_per_uur %>%
+  filter(!is_feestdag) %>%
+  filter(is_open) %>%
+  group_by(datum_weekdag, datum_uur) %>%
+  summarize(mean = mean(bellers_totaal))
+
+data_per_uur %>%
+  filter(is_feestdag) %>%
+  mutate(is_feestdag_doordeweeks = datum_weekdag %in% c("Saturday", "Sunday")) %>%
+  select(is_feestdag_doordeweeks, datum_weekdag, datum_uur, bellers_totaal) %>%
+  inner_join(day_hour_means, by = c("datum_uur", "datum_weekdag")) %>%
+  mutate(diff = bellers_totaal - mean) %>%
+  group_by(is_feestdag_doordeweeks) %>%
+  summarize(mean = mean(diff)) %>%
+  select(x = is_feestdag_doordeweeks, y = mean) %>%
+  visualize$graph(interactive = T, labels = list(x = "is_feestdag_doordeweeks", y = "mean diff with average"), types = list(bar = T))
+  })
+```
+
+Hypothese klopt niet. Feestdagen zorgen altijd voor een stijging in het aantal bellers. Die stijging is iets hoger voor feestdagen die doordeweeks zijn
+
+
+
+Verschil van het gemiddelde uitgesplitst op uur:
+```{r}
+highchartOutput("feestdag_diff_hourly")
+```
+
+```{r context="server"}
+output$feestdag_diff_hourly <- renderHighchart({
+day_hour_means <- data_per_uur %>%
+  filter(!is_feestdag) %>%
+  filter(is_open) %>%
+  group_by(datum_weekdag, datum_uur) %>%
+  summarize(mean = mean(bellers_totaal))
+
+data_per_uur %>%
+  filter(is_feestdag) %>%
+  mutate(is_feestdag_doordeweeks = !datum_weekdag %in% c("Saturday", "Sunday")) %>%
+  select(is_feestdag_doordeweeks, datum_weekdag, datum_uur, bellers_totaal) %>%
+  inner_join(day_hour_means, by = c("datum_uur", "datum_weekdag")) %>%
+  mutate(diff = bellers_totaal - mean, datum_uur = as.character(datum_uur)) %>%
+  group_by(datum_uur, is_feestdag_doordeweeks) %>%
+  summarize(mean = mean(diff)) %>%
+  group_by(is_feestdag_doordeweeks) %>%
+  select(x = datum_uur, y = mean, group = is_feestdag_doordeweeks) %>%
+  mutate(x = as.numeric(x)) %>%
+  arrange(x) %>%
+  visualize$graph(interactive = T, labels = list(x = "uur van de dag", y = "mean diff with average", fill = "is_feestdag_doordeweeks"), types = list(bar = T), options = list(label_decimals = 2))
+  })
+```
+Dit is wel interessant. Voor feestdagen in het weekend is er voor uur 7 een veel hogere stijging dan voor de rest van de uren. Als je kijkt naar deze grafiek lijkt een interactie tussen is_feestdag_doordeweeks en datum_uur nuttig. Ik weet alleen niet of dit een hele logische toevoeging is. Ergens is dat het wel, want s'nachts lijkt me dat er een kleinere stijging is dan overdag. Die piek voor doordeweeks 7 uur is eigenlijk wel logisch. Als je doordeweekse dagen en feestdagen vergelijk voor de uren die doordeweeks open zijn dan zit het grootste verschil op uur 7:
+
+```{r}
+highchartOutput("open_hour_weekday_vs_weekend")
+```
+
+```{r context="server"}
+output$open_hour_weekday_vs_weekend <- renderHighchart({
+data_per_uur %>%
+  filter(!is_feestdag & datum_uur %in% c(17:23, 0:7)) %>%
+  mutate(is_doordeweeks = !datum_weekdag %in% c("Saturday", "Sunday")) %>%
+  group_by(is_doordeweeks, datum_uur) %>%
+  summarize(mean = mean(bellers_totaal)) %>%
+  select(x = datum_uur, y = mean, group = is_doordeweeks) %>%
+  mutate(x = as.numeric(x)) %>%
+  arrange(x) %>%
+  visualize$graph(interactive = T, labels = list(x = "uur van de dag", y = "mean diff with average", fill = "is_feestdag_doordeweeks"), types = list(bar = T), options = list(label_decimals = 2))
+  })
+```
+
+
+
+
+Gemiddelde voor elke feestdag
+
+```{r}
+highchartOutput("feestdag_mean")
+```
+
+```{r context="server"}
+output$feestdag_mean <- renderHighchart({
+
+data_per_uur %>%
+  filter(is_open) %>%
+  group_by(feestdagnaam) %>%
+  summarize(mean = mean(bellers_totaal)) %>%
+  select(x = feestdagnaam, y = mean) %>%
+  visualize$graph(interactive = T, labels = list(x = "feestdag", y = "gemiddeld aantal bellers", fill = "is_feestdag_doordeweeks"), types = list(bar = T), options = list(label_decimals = 2))
+  })
+```
+
+#### inroosteren feestdagen
+
+Op het moment worden feestdagen altijd ingeroosterd als zaterdagen. Als je naar de data kijkt, lijken feestdagen dan ook het meeste op zaterdagen?
+
+```{r}
+highchartOutput("feestdag_vs_weekend_mean")
+```
+
+```{r context="server"}
+  output$feestdag_vs_weekend_mean <- renderHighchart({
+  
+  
+  niet_feestdagen_means <- data_per_uur %>%
+    filter(!is_feestdag) %>%
+    filter(datum_weekdag %in% c("Saturday", "Sunday")) %>%
+    group_by(datum_weekdag) %>%
+    summarize(mean = mean(bellers_totaal))
+    
+  feestdagen_mean <- data_per_uur %>%
+    filter(is_feestdag) %>%
+    summarize(mean = mean(bellers_totaal)) %>%
+    pull(mean)
+  
+  result <- bind_rows(niet_feestdagen_means, tibble_row(datum_weekdag = "feestdag", mean = feestdagen_mean))
+  
+  result %>%
+    select(x = datum_weekdag, y = mean) %>%
+    visualize$graph(interactive = T, labels = list(x = "dag", y = "gemiddeld aantal bellers", fill = "is_feestdag_doordeweeks"), types = list(bar = T))
+  })
+```
+
+
+```{r}
+highchartOutput("feestdag_vs_weekend")
+```
+
+```{r context="server"}
+  output$feestdag_vs_weekend <- renderHighchart({
+    weekend_dagen <- data_per_uur %>%
+      filter(is_open) %>%
+      select(bellers_totaal, datum_weekdag, is_feestdag, datum_uur) %>%
+      filter(datum_weekdag %in% c("Saturday", "Sunday")) %>%
+      group_by(datum_weekdag, datum_uur) %>%
+      summarise(y = mean(bellers_totaal, na.rm = T))
+    
+    feest_dagen <- data_per_uur %>%
+      filter(is_open) %>%
+      select(bellers_totaal, datum_weekdag, is_feestdag, datum_uur) %>%
+      filter(is_feestdag) %>%
+      group_by(datum_uur) %>%
+      summarise(y = mean(bellers_totaal, na.rm = T)) %>%
+      bind_cols(tibble(datum_weekdag = "feestdag"))
+    
+    result <- bind_rows(weekend_dagen, feest_dagen)
+    
+    result %>%
+      select(x = datum_uur, y = y, group = datum_weekdag) %>%
+      visualize$graph(interactive = T, labels = list(x = "uur van de dag", y = "gemiddelde aantal calls"), types = list(line = TRUE))
+
+  })
+```
+
+
+### seizoenspatronen en trend
+Welke seizoenspatronen zijn er? 
+Hypothese: een patroon dat zich elke dag herhaalt en een patroon dat zich elke week herhaalt. Er is geen duidelijke trend
+
+
+
+
+
+
+### zomertijd vs wintertijd check 2017
+```{r}
+highchartOutput("summer_winter_time")
+```
+
+```{r context="server"}
+output$summer_winter_time <- renderHighchart({
+  data_per_uur %>%
+    mutate(datum_jaar = as.numeric(format(datumtijd, "%Y"))) %>%
+    filter(datum_jaar == "2017") %>%
+    mutate(is_zomertijd = datumtijd >= as.POSIXct("2017-03-26 03:00:00") & datumtijd < as.POSIXct("2017-10-29 03:00:00")) %>%
+    mutate(datum_uur = as.numeric(format(datumtijd, "%H"))) %>%
+    group_by(datum_uur, is_zomertijd) %>%
+    summarize(mean = mean(bellers_totaal)) %>%
+    group_by(is_zomertijd) %>%
+    select(x = datum_uur, y = mean, group = is_zomertijd) %>%
+    visualize$graph(options = list(line = TRUE), interactive = TRUE)
+})
+```
+
+
+
+## SARIMAX
+
+
+### missing values
+Er staat in de documentatie dat ARIMA om kan gaan met ontbrekende waardes. Hoe dat gebeurd is een beetje de vraag.
+Bij een ARIMA(0,0,0)(0,1,0) met seizoens periode van 1 week op data gefilterd op is_open zie je dat die pieken zoals verwacht op zaterdag en zondag vallen. Dit veranderd zodra je de 1e doordeweekse feestdag tegenkomt. Dan veranderd het aantal punten in 1 week namelijk.
+
+Als je de data niet filtert blijven de pieken op de juiste plekken zitten
+
+
+
+
+## Conclusies
+* Een gemiddelde feestdag lijkt op een gemiddelde za/zo
+* Het lijkt nuttig om een interactie term toe te voegen voor is_feestdag_doordeweeks * datum_uur
+
+
+
+
+##TODO
+* Marjolein vertelde dat mensen op zaterdag meer bellen dan op zondag omdat er op zondag nog maar 1 dag gewacht hoeft te worden voordat de reguliere huisarts gebeld kan worden. Ze vertelde ook dat zondagen waarvan de dag daarna een feestdag is meer lijkt op een zaterdag dan een zondag. Is dit zo?

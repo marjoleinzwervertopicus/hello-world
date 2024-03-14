@@ -1,0 +1,46 @@
+---
+title: "Ritstatistiek en demografie"
+format: 
+  html:
+    page-layout: full
+server: shiny
+---
+
+
+```{r setup, include = FALSE}
+setwd(rprojroot::find_rstudio_root_file())
+source("Library/rmd/init_dashboard.R")
+
+
+
+```
+
+
+```{r context = "server"}
+ observeEvent(input$menu, {
+   # sink()
+   # # stop("test")
+   # print("test")
+   warning("test")
+})
+
+ observeEvent(input$test, {
+   # browser()
+   # sink()
+   # # stop("test")
+   # print("test2")
+   warning("test2")
+   warning(input$menu)
+ })
+```
+
+
+```{r}
+div('test')
+        tabsetPanel(
+          tabPanel(title = span("Start"), actionButton("test", "Test")),
+          tabPanel(title = span("Start2"), div("start2")),
+
+          # title = "Devise",
+          id = "menu")
+```

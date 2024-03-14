@@ -1,0 +1,2 @@
+scenario_path;utilization;waiting_time;no_ambulance;drive_times;output_avg_drive_times;a1_performance;costs;a1_delays;a1_tasks;a2_tasks;b_tasks;total_tasks;performance_tasks;tasks_delayed;tasks_edge;scenario_name
+./scenarios/rav_brabant_zuidoost/;0.3718902953586496;5298.0;10;11842.0;8.9104589917231;0.8104672131147543;1928.0;231.22999999999965;1329.0;889.0;338.0;2556.0;1220.0;0.0;0.0;scenario_3_cap_75_snel_83

@@ -1,0 +1,2 @@
+scenario_path;utilization;waiting_time;no_ambulance;drive_times;output_avg_drive_times;a1_performance;costs;a1_delays;a1_tasks;a2_tasks;b_tasks;total_tasks;performance_tasks;tasks_delayed;tasks_edge;scenario_name
+./scenarios/rav_brabant_zuidoost/;0.4244057911791688;261951.9999998007;317;278814.0;9.113951359832637;0.7950030583240224;1928.0;5697.480000000445;30592.0;20766.0;6148.0;57506.0;27793.0;0.0;0.0;scenario_1_default_geen_elektrisch
