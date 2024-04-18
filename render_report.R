@@ -1,13 +1,38 @@
 # source("Library/init_analysis.R")
-assign("import", source("Library/utilities/import.R")$value)
+assign("import", source("Library/import.R")$value())
 reports <- source("Library/utilities/reports.R")$value
 library(rlang)
-render <- import("deploy/render.R")
+source("deploy/init.R")
+message <- function(...) cli::cli_inform(paste(...))
+Sys.setenv("DEVISE_DB_USER" = "postgres")
+# options(lifecycle_verbosity = "error")
 
-reports$render("~/RStudio/Platform/insights/datakwaliteit/datakwaliteit.Rmd", output_format = "html")
+
+render(
+  file = "modules/scenario_editor/dashboard.Rmd",
+  params = list(
+    client = "rav_drenthe"
+  )
+) |> open()
 
 
-render("~/RStudio/reports/clients/mk_vrr/analyses/impact_wijkdemografie_2023/interactive_tool.qmd", output_format = "html")
+
+# a <- render("~/RStudio/reports/clients/rav_drenthe/dashboards/medewerker_rmd/dashboard.qmd", output_format = "html") 
+# 
+# a |> open()
+
+# options(warn=2)
+source("Library/init_analysis.R")
+
+
+
+
+
+reports$render("modules/ambulance_logistics_edaz/dashboards/logistics_insurer/dashboard.Rmd",
+               params = list(client = "rav_drenthe",
+                             database = "ambulance_task_edaz"),
+               runtime = "shiny_prerendered",
+               open = T)
 
 reports$render("~/RStudio/reports/modules/sb_optimalization/app_coverage.qmd", open = T, output_format = "html")
 
