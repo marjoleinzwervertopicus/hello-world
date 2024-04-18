@@ -1,0 +1,13 @@
+---
+title: Logging EDAZ
+version: Concept
+lang: nl
+output: 
+  bookdown::html_document2: default
+runtime: shiny_prerendered
+params:
+  kijlstra_umcg: "Kijlstra"
+---
+
+```{r, child=paste0("/srv/shiny-server/reports/Library/rmd/report_init_chunks.Rmd")}
+```
