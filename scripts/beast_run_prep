@@ -1,0 +1,20 @@
+#!/bin/bash
+# used to run a single script from the scheduler
+
+docker run -d \
+    -v /home/devise/repos/production/reports:/wd \
+    -v /home/devise/repos/production/reports/scheduler/daily_0800/reports.R:/script.R \
+    -e DEVISE_ENVIRONMENT=production \
+    -e DEVISE_DEPLOY_ENVIRONMENT=production \
+    -e DEVISE_DB_USER=postgres \
+    -e DEVISE_DEFAULT_DB_HOST=postgres_application_server \
+    -v "/home/devise/.devise_secrets:/root/.devise_secrets:ro" \
+    -v "/home/devise:/home/devise:ro" \
+    -v "/home/devise/insights:/home/devise/insights" \
+    -v "/home/devise/repos:/home/devise/repos:ro" \
+    -v "/home/shared:/home/shared" \
+    -v "/home/users:/home/users:ro" \
+    --network=devise-databases \
+    --name scheduler_test \
+    devise/ubuntu-r:prod \
+    /bin/bash -c 'echo -e "setwd(\"/wd\")" | cat - /script.R > /run_this_script.R ; Rscript /run_this_script.R'
