@@ -44,7 +44,7 @@ result |>
   ) |>
   hc_add_theme(hc_theme_sparkline()) |>
   hc_chart(plotBackgroundColor = F) |>
-  hc_xAxis(visible = F)
+  hc_xAxis(visible = F) |> hc_exporting(enabled = TRUE)
 
 
 # get_valuebox_average <- function(calculate_column, title, icon_name, icon_color) {

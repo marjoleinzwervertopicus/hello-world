@@ -6,8 +6,8 @@ db_con <- db("marjolein", host = "postgres_development_server")$connection
 
 setup_tables <- function() {
   db_con$set("DROP TABLE test_no_json")
-  db_con$set("CREATE TABLE test_no_json (bedrag double precision, datum date, urgentie character varying)")
-  db_con$set(paste0("INSERT INTO test_no_json (bedrag, datum, urgentie) VALUES (2.0, '", Sys.Date(), "', 'A1')"))
+  db_con$set("CREATE TABLE test_no_json (json_bool bool, json_char character varying, urgentie character varying)")
+  db_con$set(paste0("INSERT INTO test_no_json (json_bool, json_char, urgentie) VALUES (true, 'test', 'A1')"))
   
   db_con$set("DROP TABLE test_json")
   db_con$set("CREATE TABLE test_json (json_bool jsonb, json_char jsonb, urgentie character varying)")

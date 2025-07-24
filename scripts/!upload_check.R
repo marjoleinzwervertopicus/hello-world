@@ -1,9 +1,13 @@
 library(lubridate)
 library(dplyr)
+library(tibble)
 
-uploaded_files <- list.files("/home/shared/uploaded", recursive = TRUE, full.names = TRUE)
+uploaded_files <- list.files("/home/devise/repos/production/Upload/uploaded/", recursive = TRUE, full.names = TRUE)
 upload_users <- dirname(uploaded_files)
 dates <- as.Date(substr(basename(uploaded_files), 1, 10))
+
+
+last_upload <-  tibble(user = basename(upload_users), upload_date = dates) |> group_by(user) |> filter(upload_date == max(upload_date)) |> distinct() |> write.csv("laatste_uploads.csv")
 
 overview <- tibble(file_name = basename(uploaded_files), user = upload_users, upload_date = dates, full_path = uploaded_files)
 

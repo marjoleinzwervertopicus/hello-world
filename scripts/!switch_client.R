@@ -36,8 +36,28 @@
     message("Copying insights complete")
   }
   
-  file.remove("configs/user_groups.yml")
-  file.copy(paste0("/home/devise/configs/production/", client, "/user_groups.yml"), "configs/user_groups.yml")
+  do_copy_users_and_groups <- readline(prompt = paste0("Do you want to copy the users folder and user_groups.yml from /home/devise/configs/test to the 'configs' folder? y/n\n"))
+  do_copy_users_and_groups <- identical(do_copy_users_and_groups, "y")
   
-  
+  if(do_copy_users_and_groups) {
+    if(dir.exists("configs/users") && length(list.files("configs/users")) > 0) {
+      do_overwrite_users <- readline(prompt = paste0("'configs/users' folder is not empty, do you want to overwrite? y/n\n"))
+      do_overwrite_users <- identical(do_overwrite_users, "y")
+      
+      if(do_overwrite_users) {
+        unlink("configs/users", recursive = TRUE)
+      } else {
+        message("Copying users was canceled")
+        return()
+      }
+    }
+    
+    if(!dir.exists("configs/users")) dir.create("configs/users")
+    file.copy(paste0("/home/devise/configs/test/", client, "/users"), "configs/", recursive = TRUE)
+    
+    file.remove("configs/user_groups.yml")
+    file.copy(paste0("/home/devise/configs/production/", client, "/user_groups.yml"), "configs/user_groups.yml")
+    
+    message("Copying users complete")
+  }
 })()

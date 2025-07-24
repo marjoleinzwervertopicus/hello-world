@@ -35,7 +35,7 @@ server <- function(input, output) {
       hc_chart(plotBackgroundColor = F) |>
       hc_xAxis(visible = F) |>
       hc_yAxis(visible = F) |>
-      hc_navigator(enabled = F)
+      hc_navigator(enabled = F) |> hc_exporting(enabled = TRUE)
   })
 }
 

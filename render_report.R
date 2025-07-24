@@ -8,8 +8,14 @@ Sys.setenv("DEVISE_DB_USER" = "postgres")
 # options(lifecycle_verbosity = "error")
 
 
+reports$render("~/RStudio/reports/modules/ambulance_logistics_edaz/dashboards/data_quality/dashboard.Rmd", open = T, output_format = "html")
+
+
+# reports$render("~/RStudio/master/Platform/reports/!pijnacker-nootdorp_wonen_old/dashboard.Rmd", open = T, output_format = "html")
+
 render(
-  file = "modules/scenario_editor/dashboard.Rmd",
+  file = "~/RStudio/reports/modules/ambulance_logistics_edaz/wall_displays/wall_displays.Rmd",
+  # "dashboard",
   params = list(
     client = "rav_drenthe"
   )
@@ -17,9 +23,9 @@ render(
 
 
 
-# a <- render("~/RStudio/reports/clients/rav_drenthe/dashboards/medewerker_rmd/dashboard.qmd", output_format = "html") 
-# 
-# a |> open()
+render("~/RStudio/reports/clients/rav_drenthe/dashboards/medewerker_rmd/dashboard.qmd", output_format = "dashboard") |> open()
+
+a |> open(user = list(email = "g.jansens@rav.nl", name = "W test"))
 
 # options(warn=2)
 source("Library/init_analysis.R")
@@ -34,7 +40,6 @@ reports$render("modules/ambulance_logistics_edaz/dashboards/logistics_insurer/da
                runtime = "shiny_prerendered",
                open = T)
 
-reports$render("~/RStudio/reports/modules/sb_optimalization/app_coverage.qmd", open = T, output_format = "html")
 
 
 reports$render("~/RStudio/Platform/insights/production_rmd/dashboard.Rmd", open = FALSE)

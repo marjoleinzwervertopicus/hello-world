@@ -593,13 +593,14 @@ input <- list(rb_date_a1_call_part_1_duration_trendline = "quarterly", rb_date_a
                  date_filter =  daterange_select$values,
                  exclude_excluded = TRUE) %>%
       mutate(tooltip = paste0(tags$b(incident_municipality), "<br> Aantal inzetten: ", y)) 
+    
     result %>%
       visualize$map(dynamic = T,
-                    colors = colors(c("#AAAAAA", "#4796AE", "#275461"), n = 10, skew = skew_colors(result$y), alpha = 0.6),
+                    # colors = colors(c("#AAAAAA", "#4796AE", "#275461"), n = 10, skew = skew_colors(result$y), alpha = 0.6),
                     bbox = bbox,
                     theme =  list(sf = list(tooltip = list(size = 3, alpha = 0.8), alpha = 0.7)),
                     labels = list(title = "Aantal A1-inzetten",
-                                  subtitle = paste0("In de periode: ", date_utilities$daterange_to_text(daterange_select$values)),
+                                  subtitle = paste0("In de periode: "),
                                   color = "Aantal <br> A1-inzetten"),
                     zoom_bounds = list(min_zoom = 7, max_zoom = 14))
     

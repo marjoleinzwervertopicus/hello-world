@@ -1,0 +1,113 @@
+---
+title: "test"
+format: revealjs
+editor: visual
+---
+
+---
+format: 
+  revealjs
+
+execute:
+    echo: false
+    message: false
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(DT)
+
+options(dplyr.summarise.inform = FALSE)
+```
+
+# Data prep
+
+```{r echo=TRUE}
+dat1 <- diamonds %>%
+  group_by(cut) %>%
+  summarize(n = n(), price = round(mean(price), 2))
+dat2 <- diamonds %>%
+  group_by(carat) %>%
+  summarize(n = n(), price = round(mean(price), 2))
+dat3 <- diamonds %>%
+  group_by(clarity) %>%
+  summarize(n = n(), price = round(mean(price), 2))
+```
+
+## Page 1
+
+::: panel-tabset
+### Tab 1
+
+```{r}
+#| label: tab-1-1
+datatable(dat1)
+```
+
+### Tab 2
+
+```{r}
+#| label: tab-1-2
+datatable(dat2)
+```
+
+### Tab 3
+
+```{r}
+#| label: tab-1-3
+datatable(dat3)
+```
+:::
+
+## Page 2
+
+::: panel-tabset
+### Tab 1
+
+```{r}
+#| label: tab-2-1
+datatable(dat3)
+```
+
+### Tab 2
+
+```{r}
+#| label: tab-2-2
+datatable(dat1)
+```
+
+### Tab 3
+
+```{r}
+#| label: tab-2-3
+datatable(dat2)
+```
+:::
+
+## Page 3
+
+::: panel-tabset
+### Tab 1
+
+```{r}
+#| label: tab-3-1
+datatable(dat3)
+```
+
+### Tab 2
+
+```{r}
+#| label: tab-3-2
+datatable(dat1)
+```
+
+### Tab 3
+
+```{r}
+#| label: tab-3-3
+datatable(dat2)
+```
+:::
