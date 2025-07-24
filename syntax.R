@@ -5,7 +5,7 @@ dataset <- geography$geocode_batch("dataset", search_prefix = "incident_", match
 
 
 # I like
-dataset <- geography$geocode_batch(
+dataset <- geography$geocode_batch( 
   dataset,
   search_prefix = "incident_",
   match_by = "zipcode",
