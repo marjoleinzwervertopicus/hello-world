@@ -7,7 +7,7 @@ dataset <- geography$geocode_batch("dataset",
   return = c("municipality", "province", "place"),
   T,
   T
-)
+) 
 
 
 dataset <- geography$geocode_batch(
