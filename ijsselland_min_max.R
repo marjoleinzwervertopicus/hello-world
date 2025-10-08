@@ -1,7 +1,0 @@
-source("Library/init.R") 
-database <- import("Library/database/database.R")
-connections <- database$get_connections("rav_ijsselland", host = "postgres_etl_server")
-a <- connections$customer$get("SELECT * FROM edaz_task_monthly_inbox")
-datums <- a |> filter(ts > as.Date("2025-01-27")) |> pull(drfritritdatum)
-datums |> min(na.rm = T)
-datums |> max(na.rm = T)
