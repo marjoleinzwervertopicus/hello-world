@@ -1,2 +1,0 @@
-scenario_path;utilization;waiting_time;no_ambulance;drive_times;output_avg_drive_times;a1_performance;costs;a1_delays;a1_tasks;a2_tasks;b_tasks;total_tasks;performance_tasks;tasks_delayed;tasks_edge;scenario_name
-./scenarios/rav_fryslan/;0.19840960639375257;0.0;0;198873.6666666666;7.1074538675053285;0.8865993632370086;3347.1000000000013;2813.810000000104;27981.0;20264.0;5998.0;54243.0;24813.0;0.0;0.0;cap_120_snel_125
