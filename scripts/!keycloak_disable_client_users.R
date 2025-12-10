@@ -1,11 +1,11 @@
 source("Library/init.R")
 keycloak_api <- import("utilities/keycloak_api.R")
 
-client_code <- "mmt_umcg"
+client_code <- "hap"
 
-mmt_umcg_users <- keycloak_api$get_realm_role_users(client_code)
+hap_users <- keycloak_api$get_realm_role_users(client_code)
 
-for(user_email in mmt_umcg_users) {
+for(user_email in hap_users) {
   user_groups <- keycloak_api$get_user_groups(user_email)
   if(all(user_groups %in% c(client_code, "upload"))) {
     keycloak_api$remove_group_from_user(user_email, client_code)
