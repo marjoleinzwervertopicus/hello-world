@@ -12,7 +12,6 @@ dev_connection$query("UPDATE specialization_type SET name = 'AMI' WHERE name = '
 dev_connection$query("UPDATE specialization_type SET name = 'ECMO' WHERE name = 'Ecmo'", get = FALSE)
 dev_connection$query("UPDATE specialization_type SET name = 'Level-1 traumazorg' WHERE name = 'Traumacentrum'", get = FALSE)
 
-
 #new types
 dev_connection$query("INSERT INTO specialization_type (name) VALUES ('Interventie/ clippen SAB')", get = FALSE)
 dev_connection$query("INSERT INTO specialization_type (name) VALUES ('Neurotrauma (neurochirurgie)')", get = FALSE)
@@ -21,8 +20,6 @@ dev_connection$query("INSERT INTO specialization_type (name) VALUES ('PCI Centru
 dev_connection$query("INSERT INTO specialization_type (name) VALUES ('EHH')", get = FALSE)
 dev_connection$query("INSERT INTO specialization_type (name) VALUES ('EHLH')", get = FALSE)
 dev_connection$query("INSERT INTO specialization_type (name) VALUES ('Acute psychiatrie')", get = FALSE)
-
-
 
 #deleted types
 dev_connection$query("DELETE FROM specialization_type WHERE name = 'Profiel gedrag'", get = FALSE)
