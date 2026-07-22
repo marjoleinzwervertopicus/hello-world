@@ -12,5 +12,5 @@ dump_db() {
 }
 
 
-dump_db kwaliteitskaderapp user_info client_info
+dump_db kwaliteitskaderapp user_info client_info user_dashboard
 dump_db hap_hcdo
