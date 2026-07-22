@@ -1,3 +1,0 @@
-hap_analytics_historical_data
-hap_analytics_holidays
-hap_analytics_resources
