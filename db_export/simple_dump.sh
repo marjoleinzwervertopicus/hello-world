@@ -8,7 +8,7 @@ dump_db() {
     for table in "$@"; do
         excludes+=(--exclude-table="$table")
     done
-    pg_dump "${excludes[@]}" -d "$db" -f "${db}.dump" -Fc -U postgres
+    pg_dump "${excludes[@]}" -d "$db" -f "dumps/${db}.dump" -Fc -U postgres
 }
 
 
