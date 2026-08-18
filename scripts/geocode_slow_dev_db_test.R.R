@@ -1,4 +1,11 @@
 source("Library/init.R")
+dataset_ijsselland <- readRDS("~/RStudio/hello-world/scripts/dataset_ijsselland.RDS")
+
+connections <- import("Library/database/database.R")$get_connections("geography", persistent = F, host = "postgres_development_server")$geography
+geography <- source("Library/calculate/geography.R", local = T)$value$create(connections)
+dataset <- geography$geocode_batch(dataset_ijsselland[1:1000, ], hex_grid = T, bind = T, prefix = "incident_", search_prefix = "incident_", return = c("latitude", "longitude", "place", "province", "municipality", "housenumber"))
+connections$disconnect()
+
 # 
 # library(db)
 # connections_dev <- db_connect("geography", preset = "postgres_development_server")
@@ -30,9 +37,4 @@ source("Library/init.R")
 # 
 # identical(indices_app, indices_dev)
 
-dataset_ijsselland <- readRDS("~/RStudio/hello-world/scripts/dataset_ijsselland.RDS")
 
-connections <- import("Library/database/database.R")$get_connections("geography", persistent = F, host = "postgres_application_server")$geography
-geography <- source("Library/calculate/geography.R", local = T)$value$create(connections)
-dataset <- geography$geocode_batch(dataset_ijsselland, hex_grid = T, bind = T, prefix = "incident_", search_prefix = "incident_", return = c("latitude", "longitude", "place", "province", "municipality", "housenumber"))
-connections$disconnect()
