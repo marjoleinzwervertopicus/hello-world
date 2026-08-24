@@ -1,21 +1,25 @@
 source("Library/init.R")
 db_connect <- import("Library/database/db_connect.R")
 
-db_app <- db_connect("mknn", preset = "postgres_application_admin")
-db_app_new <- db_connect("mknn", preset = "postgres_application_new_admin")
+db_app <- db_connect("rav_brabant_midden_west_noord", preset = "postgres_application_admin")
+db_app_new <- db_connect("rav_brabant_midden_west_noord", preset = "postgres_application_new_admin")
 
 table_names <- c(
-  "dispatch_task_gms",
-  "gms_rit_gecombineerd",
-  "approval",
   "account_names",
   "contracts",
   "function_requirements",
   "hours",
   "hours_planning",
-  "planbaar_vervoer",
+  "raw_dim_us_activity_type",
+  "raw_dim_us_date",
+  "raw_dim_us_department",
+  "raw_dim_us_employee",
+  "raw_fact_us_assigned_activity",
+  "raw_youforce",
+  "resource",
   "resources",
-  "roster_realisation"
+  "sb_ambulance_task",
+  "scenario"
 )
 
 for(table_name in table_names) {

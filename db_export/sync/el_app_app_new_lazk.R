@@ -21,7 +21,9 @@ table_names <- c(
   "roaz",
   "safety_region",
   "specialization",
-  "specialization_type"
+  "specialization_type",
+  "drive_time_ambulance",
+  "drive_time_person"
 )
 
 for(table_name in table_names) {

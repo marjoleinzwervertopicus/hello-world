@@ -6,7 +6,14 @@ db_app_new <- db_connect("mmt_gr", preset = "postgres_application_new_admin")
 
 table_names <- c(
   "task_prepared",
-  "capacity"
+  "capacity",
+  "daylightperiod",
+  "deletedritidsperuser_raw",
+  "drfformdata_raw",
+  "drfrit_raw",
+  "drfusers_raw",
+  "notcompletedritidsview_raw",
+  "task_combined"
 )
 
 for(table_name in table_names) {

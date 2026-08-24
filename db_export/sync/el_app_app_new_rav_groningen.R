@@ -1,18 +1,13 @@
 source("Library/init.R")
 db_connect <- import("Library/database/db_connect.R")
 
-db_app <- db_connect("mmt_ams", preset = "postgres_application_admin")
-db_app_new <- db_connect("mmt_ams", preset = "postgres_application_new_admin")
+db_app <- db_connect("rav_groningen", preset = "postgres_application_admin")
+db_app_new <- db_connect("rav_groningen", preset = "postgres_application_new_admin")
 
 table_names <- c(
-  "task_prepared",
-  "capacity",
-  "daylightperiod",
-  "deletedritidsperuser_raw",
-  "drfformdata_raw",
-  "drfrit_raw",
-  "notcompletedritidsview_raw",
-  "task_combined"
+  "resource",
+  "sb_ambulance_task",
+  "scenario"
 )
 
 for(table_name in table_names) {

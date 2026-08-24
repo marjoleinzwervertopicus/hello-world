@@ -1,45 +1,23 @@
 source("Library/init.R")
 db_connect <- import("Library/database/db_connect.R")
 
-db_app <- db_connect("rav_fryslan", preset = "postgres_application_admin")
-db_app_new <- db_connect("rav_fryslan", preset = "postgres_application_new_admin")
+db_app <- db_connect("rav_brabant_zuidoost", preset = "postgres_application_admin")
+db_app_new <- db_connect("rav_brabant_zuidoost", preset = "postgres_application_new_admin")
 
 table_names <- c(
-  "ambulance_track_webfleet",
-  "edaz_log",
-  "simulation",
-  "scenario",
-  "resource",
-  "ambulance_task_edaz",
-  "downtime",
-  "edaz_task_raw",
-  "edaz_form_raw",
-  "flight",
-  "hospital",
-  "logistic",
-  "qa",
-  "shift",
-  "station",
-  "contract_raw",
-  "contracted_time_raw",
-  "deployments_specification_raw",
-  "deployments_raw",
-  "personnel_contract",
-  "personnel_hours",
-  "ritten_edazng_raw",
-  "ritten_edazng",
   "account_names",
-  "component",
+  "accountvalues_raw",
   "contracts",
-  "downtime_raw",
-  "edaz_valid_task",
-  "flight_raw",
+  "contracts_prepared",
+  "contracts_raw",
   "function_requirements",
   "hours",
   "hours_planning",
-  "logistics_raw",
-  "medewerkers_dashboard",
-  "qa_raw",
+  "hours_prepared",
+  "humanresources_raw",
+  "prepared_contracts",
+  "prepared_hours",
+  "props_raw",
   "raw_hist_account",
   "raw_hist_dayinfo",
   "raw_hist_labourhist",
@@ -66,12 +44,15 @@ table_names <- c(
   "raw_ref_shiftpattern",
   "raw_ref_timetype",
   "raw_ref_translations",
+  "resource",
+  "resourcegroups_raw",
   "resources",
   "roster_realisation",
+  "roster_required_realisation",
   "sb_ambulance_task",
-  "simulation_request",
-  "vehicle",
-  "wadden"
+  "scenario",
+  "shift_targets",
+  "trainees"
 )
 
 for(table_name in table_names) {

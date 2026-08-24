@@ -27,7 +27,20 @@ table_names <- c(
   "ref_shiftgroup_parent_raw",
   "ref_shiftgroup_raw",
   "ref_shiftpattern_raw",
-  "ref_timetype_raw"
+  "ref_timetype_raw",
+  "hist_dayinfo_raw",
+  "hist_resource_attr_raw",
+  "hist_roster_raw",
+  "hist_rosterphase_raw",
+  "hist_shiftstaffing_raw",
+  "hist_timeinterval_raw",
+  "personnel_contract",
+  "personnel_hours",
+  "ref_dayinfocategory_raw",
+  "ref_rosterperiod_raw",
+  "ref_translations_raw",
+  "simulation",
+  "simulation_request"
 )
 
 for(table_name in table_names) {

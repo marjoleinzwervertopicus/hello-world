@@ -1,18 +1,19 @@
 source("Library/init.R")
 db_connect <- import("Library/database/db_connect.R")
 
-db_app <- db_connect("mmt_ams", preset = "postgres_application_admin")
-db_app_new <- db_connect("mmt_ams", preset = "postgres_application_new_admin")
+db_app <- db_connect("roaz_aznn", preset = "postgres_application_admin")
+db_app_new <- db_connect("roaz_aznn", preset = "postgres_application_new_admin")
 
 table_names <- c(
-  "task_prepared",
-  "capacity",
-  "daylightperiod",
-  "deletedritidsperuser_raw",
-  "drfformdata_raw",
-  "drfrit_raw",
-  "notcompletedritidsview_raw",
-  "task_combined"
+  "roaz_ehh",
+  "roaz_geboortezorg",
+  "roaz_ggz",
+  "roaz_hap",
+  "roaz_ketenzorg",
+  "roaz_ltr",
+  "roaz_neurologie",
+  "roaz_rav",
+  "roaz_seh"
 )
 
 for(table_name in table_names) {

@@ -15,7 +15,7 @@ table_names <- c(
   "hist_labourhist_raw",
   "hist_roster_raw",
   "hist_resource_attr_raw",
-  "hist_labourhist_attr_raw", 
+  "hist_labourhist_attr_raw",
   "hist_timeinterval_raw",
   "custom_hist_prop_raw",
   "ref_absence_raw",
@@ -33,7 +33,16 @@ table_names <- c(
   "ref_shiftpattern_raw",
   "ref_timetype_raw",
   "personnel_hours",
-  "personnel_contract"
+  "personnel_contract",
+  "edaz_valid_task",
+  "hist_dayinfo_raw",
+  "hist_rosterphase_raw",
+  "hist_shiftstaffing_raw",
+  "logistic",
+  "ref_dayinfocategory_raw",
+  "ref_rosterperiod_raw",
+  "ref_translations_raw",
+  "sb_ambulance_task"
 )
 
 for(table_name in table_names) {

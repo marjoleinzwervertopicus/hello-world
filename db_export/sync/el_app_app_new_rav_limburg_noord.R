@@ -36,7 +36,21 @@ table_names <- c(
   "personnel_in_out",
   "shift",
   "station",
-  "approval"
+  "approval",
+  "afas_personnel_raw",
+  "burenhulp_brabant_nmw",
+  "burenhulp_gelderland_zuid",
+  "component",
+  "dispatch_gms_edaz",
+  "edaz_drfformdata_raw",
+  "edaz_drfrit_raw",
+  "logistics_raw",
+  "personnel_contract",
+  "personnel_hours",
+  "ritten_edazng",
+  "ritten_edazng_raw",
+  "simulation_request",
+  "vehicle"
 )
 
 for(table_name in table_names) {
