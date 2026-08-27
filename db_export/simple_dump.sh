@@ -1,45 +1,36 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-#data_statistics? customer?
-#tables that are unused for all clients
-EXCLUDED_TABLES=(dashboard data_statistics data_summary email_queue guide flag input_state insight message message_user metadata_calculate metadata_variable
-user_dashboard usergroup user_group user_group_insight user_guide user_info user_insight user_message user_metadata_calculate user_metadata_variable user_statistics user_user_group)
 
 dump_db() {
     local db="$1"
     shift
-    local excludes=()
-    for table in "${EXCLUDED_TABLES[@]}" "$@"; do
-        excludes+=(--exclude-table="$table")
+    local includes=()
+    for table in "$@"; do
+        includes+=(--table="$table")
     done
-    
-    #client_info is old for every client except LAZK and kwkapp
-    if [[ "$db" != "kwaliteitskaderapp" && "$db" != "lazk" ]]; then
-        excludes+=(--exclude-table=client_info)
-    fi
-    pg_dump "${excludes[@]}" -d "$db" -f "dumps/${db}.dump" -Fc -U postgres
+    pg_dump "${includes[@]}" -d "$db" -f "dumps/${db}.dump" -Fc -U postgres
 }
 
-dump_db hap_hcdo
-dump_db kwaliteitskaderapp
-dump_db mmt_gr                          bag_woonplaats_mei_23
-dump_db platform                        bag customer driving_time lexicon location_zipcode4 shape_point
-dump_db rav_groningen                   logistic logistic_backup
-dump_db rav_brabant_midden_west_noord   raw_ortec
-dump_db mmt_ams                         bag_woonplaats_mei_23
-dump_db mknn                            gms_rit_raw
-dump_db rav_oost
-dump_db mk_limburg                      data_statistics gms_task_2022_01_01_2022_01_31
-dump_db rav_limburg_noord               message_user ambulance_task_edaz_2022_01_01_2022_01_31 ambulance_task_edaz_backup ambulance_task_edaz_bk edaz_task_raw_backup logistic_backup logistic_temp_1 logistic_test personnel_contract_backup personnel_contract_temp personnel_hours_backup personnel_hours_temp personnel_in_out_backup personnel_in_out_temp test test_dropme
-dump_db geography                       testtest
-dump_db rav_twente
-dump_db rav_ijsselland                  ambulance_task_edaz_2022_01_01_2022_01_31 edaz_task_raw_old logistic_backup test1
-dump_db rav_drenthe                     backup_afas_raw edaz_form_raw_2022_01_01_2022_01_31 edaz_task_raw_2022_01_01_2022_01_31 hist_account_raw_2022_01_01_2022_01_31 hist_roster_raw_2022_01_01_2022_01_31 hist_timeinterval_raw_2022_01_01_2022_01_31 logistic2 logistic2_backup logistic2_temp personnel_contract_bk_2024 personnel_contract_old personnel_contract_temp personnel_in_out_backup personnel_in_out_temp psycholance_backup psycholance_backup_12_3 psycholance_backup_18_2 synergy_task_inbox_backup test_tz
-dump_db rav_fryslan                     ambulance_task_edaz_2022_01_01_2022_01_31 ambulance_task_edaz_backup_20260422 ambulance_task_edaz_temp downtime2 json_test logistic_backup qa_backup
-dump_db rav_brabant_zuidoost
-dump_db rav_gelderland_zuid
-dump_db rav_utrecht                     sb_ambulance_task_2025_q4
-dump_db rav_hollands_midden
-dump_db lazk
-dump_db roaz_aznn                       roaz_ggz_old roaz_hap_old roaz_ketenzorg_old roaz_rav_old roaz_seh_old
-dump_db rav_limburg_zuid                ambulance_task_edaz_2022_01_01_2022_01_31 ambulance_task_edaz_bk edaz_task_raw_old
+dump_db hap_hcdo                        hap_analytics_historical_data hap_analytics_holidays hap_analytics_resources
+dump_db kwaliteitskaderapp              client_info document framework provider status
+dump_db mmt_gr                          capacity daylightperiod deletedritidsperuser_raw drfformdata_raw drfrit_raw drfusers_raw notcompletedritidsview_raw task_combined task_prepared
+dump_db platform                        location_bag location_zipcode4
+dump_db rav_groningen                   resource sb_ambulance_task scenario
+dump_db rav_brabant_midden_west_noord   account_names contracts function_requirements hours hours_planning raw_dim_us_activity_type raw_dim_us_date raw_dim_us_department raw_dim_us_employee raw_fact_us_assigned_activity raw_youforce resource resources sb_ambulance_task scenario
+dump_db mmt_ams                         capacity daylightperiod deletedritidsperuser_raw drfformdata_raw drfrit_raw notcompletedritidsview_raw task_combined task_prepared
+dump_db mknn                            hr.a account_names approval hr.contracts contracts dispatch_task_gms function_requirements gms_rit_gecombineerd hr.hours hours hr.hours_planning hours_planning planbaar_vervoer hr.resources resources hr.roster_realisation roster_realisation
+dump_db rav_oost                        sb_ambulance_task
+dump_db mk_limburg                      approval geography_columns geometry_columns gms_task raster_columns raster_overviews spatial_ref_sys
+dump_db rav_limburg_noord               afas_personnel_raw ambulance_task_edaz approval burenhulp_brabant_nmw burenhulp_gelderland_zuid component dispatch_gms_edaz edaz_drfformdata_raw edaz_drfrit_raw edaz_form_raw edaz_task_raw geography_columns geometry_columns hist_account_raw hist_labourhist_attr_raw hist_labourhist_raw hist_resource_attr_raw hist_roster_raw hist_timeinterval_raw hospital logistic logistics_raw personnel_contract personnel_hours personnel_in_out raster_columns raster_overviews ref_absence_raw ref_account_raw ref_attribute_raw ref_contract_raw ref_labourhist_raw ref_prop_raw ref_resource_raw ref_resourcegroup_parent_raw ref_resourcegroup_raw ref_shift_raw ref_shiftgroup_parent_raw ref_shiftgroup_raw ref_shiftpattern_raw ref_timetype_raw resource ritten_edazng ritten_edazng_raw scenario shift simulation simulation_request spatial_ref_sys station vehicle
+dump_db geography                       bag_adres bag_adres_feb_25 bag_adres_mei_23 country_shape coverage_shape coverage_tasks_limburg district_shape drive_time_ambulance drive_time_car geography_columns geometry_columns hex_grid lazk_regions municipality_shape neighborhood_shape place_info planet_osm_line planet_osm_nodes planet_osm_point planet_osm_polygon planet_osm_rels planet_osm_roads planet_osm_ways province_shape raster_columns raster_overviews rav_region_shape rav_regions residential_area_shape roaz_region_shape spatial_ref_sys square_100m_shape zipcode_4_info zipcode_4_shape
+dump_db rav_twente                      resource scenario
+dump_db rav_ijsselland                  ambulance_task_edaz custom_hist_prop_raw edaz_form_raw edaz_task_raw edaz_valid_task geography_columns geometry_columns hist_account_raw hist_dayinfo_raw hist_labourhist_attr_raw hist_labourhist_raw hist_resource_attr_raw hist_roster_raw hist_rosterphase_raw hist_shiftstaffing_raw hist_timeinterval_raw logistic personnel_contract personnel_hours raster_columns raster_overviews ref_absence_raw ref_account_raw ref_attribute_raw ref_contract_raw ref_dayinfocategory_raw ref_labourhist_raw ref_prop_raw ref_resource_raw ref_resourcegroup_parent_raw ref_resourcegroup_raw ref_rosterperiod_raw ref_shift_raw ref_shiftgroup_parent_raw ref_shiftgroup_raw ref_shiftpattern_raw ref_timetype_raw ref_translations_raw resource sb_ambulance_task scenario simulation spatial_ref_sys
+dump_db rav_drenthe                     account_names afas_raw ambulance_task_edaz component confused_behavior contracts custom_hist_prop_raw custom_hist_resourcetimestamp_raw edaz_form_raw edaz_log edaz_task_raw edaz_valid_task function_requirements geography_columns geometry_columns hist_account_raw hist_dayinfo_raw hist_labourhist_attr_raw hist_labourhist_raw hist_resource_attr_raw hist_roster_raw hist_rosterphase_raw hist_shiftstaffing_raw hist_timeinterval_raw hospital hours hours_planning itel_app.locations itel_app.locations_gps logistic logistic_new logistic_treant logistics_raw medewerkers_dashboard itel_app.personnel personnel_contract personnel_contract_afas itel_app.personnel_gps personnel_hours personnel_in_out psycholance psycholance_task psycholance_task_info raster_columns raster_overviews raw_custom_hist_prop raw_custom_hist_resourcetimestamp raw_hist_account raw_hist_dayinfo raw_hist_labourhist raw_hist_labourhist_attr raw_hist_resource_attr raw_hist_roster raw_hist_rosterphase raw_hist_shiftstaffing raw_hist_timeinterval raw_ref_absence raw_ref_account raw_ref_attribute raw_ref_contract raw_ref_dayinfocategory raw_ref_labourhist raw_ref_prop raw_ref_resource raw_ref_resourcegroup raw_ref_resourcegroup_parent raw_ref_rosterperiod raw_ref_shift raw_ref_shiftgroup raw_ref_shiftgroup_parent raw_ref_shiftpattern raw_ref_timetype raw_ref_translations ref_absence_raw ref_account_raw ref_attribute_raw ref_contract_raw ref_dayinfocategory_raw ref_labourhist_raw ref_prop_raw ref_resource_raw ref_resourcegroup_parent_raw ref_resourcegroup_raw ref_rosterperiod_raw ref_shift_raw ref_shiftgroup_parent_raw ref_shiftgroup_raw ref_shiftpattern_raw ref_timetype_raw ref_translations_raw resource resources itel_app.rings ritten_edazng ritten_edazng_raw roster_required_realisation sb_ambulance_task scenario shift simulation simulation_request spatial_ref_sys station task_gms vehicle verward_gedrag webfleet_tracks
+dump_db rav_fryslan                     account_names ambulance_task_edaz ambulance_track_webfleet component contract_raw contracted_time_raw contracts deployments_raw deployments_specification_raw downtime downtime_raw edaz_form_raw edaz_log edaz_task_raw edaz_valid_task flight flight_raw function_requirements geography_columns geometry_columns hospital hours hours_planning logistic logistics_raw medewerkers_dashboard personnel_contract personnel_hours qa qa_raw raster_columns raster_overviews raw_contracts raw_hist_account raw_hist_dayinfo raw_hist_labourhist raw_hist_labourhist_attr raw_hist_resource_attr raw_hist_roster raw_hist_rosterphase raw_hist_shiftstaffing raw_hist_timeinterval raw_ref_absence raw_ref_account raw_ref_attribute raw_ref_contract raw_ref_dayinfocategory raw_ref_labourhist raw_ref_prop raw_ref_resource raw_ref_resourcegroup raw_ref_resourcegroup_parent raw_ref_rosterperiod raw_ref_shift raw_ref_shiftgroup raw_ref_shiftgroup_parent raw_ref_shiftpattern raw_ref_timetype raw_ref_translations resource resources ritten_edazng ritten_edazng_raw roster_realisation sb_ambulance_task scenario shift simulation simulation_request spatial_ref_sys station vehicle wadden
+dump_db rav_brabant_zuidoost            account_names accountvalues_raw contracts contracts_prepared contracts_raw function_requirements hours hours_planning hours_prepared humanresources_raw prepared_contracts prepared_hours props_raw raw_hist_account raw_hist_dayinfo raw_hist_labourhist raw_hist_labourhist_attr raw_hist_resource_attr raw_hist_roster raw_hist_rosterphase raw_hist_shiftstaffing raw_hist_timeinterval raw_ref_absence raw_ref_account raw_ref_attribute raw_ref_contract raw_ref_dayinfocategory raw_ref_labourhist raw_ref_prop raw_ref_resource raw_ref_resourcegroup raw_ref_resourcegroup_parent raw_ref_rosterperiod raw_ref_shift raw_ref_shiftgroup raw_ref_shiftgroup_parent raw_ref_shiftpattern raw_ref_timetype raw_ref_translations resource resourcegroups_raw resources roster_realisation roster_required_realisation sb_ambulance_task scenario shift_targets trainees
+dump_db rav_gelderland_zuid             account_names contracts function_requirements hours hours_planning hr_resources prepared_contracts prepared_hours raw_hist_account raw_hist_dayinfo raw_hist_labourhist raw_hist_labourhist_attr raw_hist_resource_attr raw_hist_roster raw_hist_rosterphase raw_hist_shiftstaffing raw_hist_timeinterval raw_ref_absence raw_ref_account raw_ref_attribute raw_ref_contract raw_ref_dayinfocategory raw_ref_labourhist raw_ref_prop raw_ref_resource raw_ref_resourcegroup raw_ref_resourcegroup_parent raw_ref_rosterperiod raw_ref_shift raw_ref_shiftgroup raw_ref_shiftgroup_parent raw_ref_shiftpattern raw_ref_timetype raw_ref_translations resource resources roster_realisation roster_required_realisation sb_ambulance_task scenario trainees
+dump_db rav_utrecht                     resource ritten_raw ritten_uit_koppeling sb_ambulance_task scenario
+dump_db rav_hollands_midden             account_names contracts function_requirements hours hours_planning raw_hist_account raw_hist_dayinfo raw_hist_labourhist raw_hist_labourhist_attr raw_hist_resource_attr raw_hist_roster raw_hist_rosterphase raw_hist_shiftstaffing raw_hist_timeinterval raw_ref_absence raw_ref_account raw_ref_attribute raw_ref_contract raw_ref_dayinfocategory raw_ref_labourhist raw_ref_prop raw_ref_resource raw_ref_resourcegroup raw_ref_resourcegroup_parent raw_ref_rosterperiod raw_ref_shift raw_ref_shiftgroup raw_ref_shiftgroup_parent raw_ref_shiftpattern raw_ref_timetype raw_ref_translations resource resources roster_realisation roster_required_realisation sb_ambulance_task scenario
+dump_db lazk                            ambulance client_info drive_time_ambulance drive_time_ambulance_2020_day drive_time_ambulance_2020_night drive_time_ambulance_2020_rushhour drive_time_hap drive_time_person hospital municipality provider provider_type province rav region roaz safety_region specialization specialization_type
+dump_db roaz_aznn                       roaz_ehh roaz_ehh_test roaz_geboortezorg roaz_ggz roaz_hap roaz_ketenzorg roaz_ltr roaz_neurologie roaz_rav roaz_seh
+dump_db rav_limburg_zuid                ambulance_task_edaz approval edaz_form_raw edaz_task_raw geography_columns geometry_columns hist_account_raw hist_dayinfo_raw hist_labourhist_attr_raw hist_labourhist_raw hist_resource_attr_raw hist_roster_raw hist_rosterphase_raw hist_shiftstaffing_raw hist_timeinterval_raw personnel_contract personnel_hours raster_columns raster_overviews ref_absence_raw ref_account_raw ref_attribute_raw ref_contract_raw ref_dayinfocategory_raw ref_labourhist_raw ref_prop_raw ref_resource_raw ref_resourcegroup_parent_raw ref_resourcegroup_raw ref_rosterperiod_raw ref_shift_raw ref_shiftgroup_parent_raw ref_shiftgroup_raw ref_shiftpattern_raw ref_timetype_raw ref_translations_raw resource scenario simulation simulation_request spatial_ref_sys

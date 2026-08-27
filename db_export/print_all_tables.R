@@ -11,7 +11,7 @@ excluded_tables <- c(
 # per-database excludes (kept in sync with simple_dump.sh)
 excluded_tables_per_db <- list(
   mmt_gr = "bag_woonplaats_mei_23",
-  platform = c("bag", "customer", "driving_time", "lexicon", "location_zipcode4", "shape_point"),
+  platform = c("bag", "customer", "driving_time", "lexicon", "shape_point"),
   rav_groningen = c("logistic", "logistic_backup"),
   rav_brabant_midden_west_noord = "raw_ortec",
   mmt_ams = "bag_woonplaats_mei_23",
