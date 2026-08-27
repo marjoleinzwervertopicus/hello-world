@@ -2,7 +2,7 @@ library(db)
 
 # tables that are unused for all clients (kept in sync with simple_dump.sh)
 excluded_tables <- c(
-  "client_info", "dashboard", "data_statistics", "data_summary", "email_queue", "guide", "flag", "input_state", "insight",
+  "dashboard", "data_statistics", "data_summary", "email_queue", "guide", "flag", "input_state", "insight",
   "message", "message_user", "metadata_calculate", "metadata_variable",
   "user_dashboard", "usergroup", "user_group", "user_group_insight", "user_guide", "user_info", "user_insight",
   "user_message", "user_metadata_calculate", "user_metadata_variable", "user_statistics", "user_user_group"
@@ -39,7 +39,7 @@ excluded_tables_per_db <- list(
 
 db_names <- c(
   "hap_hcdo",
-  # "kwaliteitskaderapp",
+  "kwaliteitskaderapp",
   "mmt_gr",
   "platform",
   "rav_groningen",
@@ -58,7 +58,7 @@ db_names <- c(
   "rav_gelderland_zuid",
   "rav_utrecht",
   "rav_hollands_midden",
-  # "lazk",
+  "lazk",
   "roaz_aznn",
   "rav_limburg_zuid"
 )
@@ -69,6 +69,12 @@ for (db_name in db_names) {
   table_names <- sub("^public\\.", "", table_names)
 
   db_excluded_tables <- c(excluded_tables, excluded_tables_per_db[[db_name]])
+
+  # client_info is old for every client except LAZK and kwkapp (kept in sync with simple_dump.sh)
+  if (!db_name %in% c("kwaliteitskaderapp", "lazk")) {
+    db_excluded_tables <- c(db_excluded_tables, "client_info")
+  }
+
   table_names <- table_names[!table_names %in% db_excluded_tables]
 
   cat("Database: ", db_name, "\n")
