@@ -8,7 +8,7 @@ dump_db() {
     for table in "$@"; do
         includes+=(--table="$table")
     done
-    pg_dump "${includes[@]}" -d "$db" -f "dumps/${db}.dump" -Fc -U postgres
+    pg_dump "${includes[@]}" -d "$db" -f "dumps/${db}.dump" -Fc --no-owner --no-privileges -U postgres
 }
 
 dump_db hap_hcdo                        hap_analytics_historical_data hap_analytics_holidays hap_analytics_resources
