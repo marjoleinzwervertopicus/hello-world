@@ -1,6 +1,6 @@
 library(db)
-library(DBI)
-# table sizes for exactly the tables dumped by simple_dump.sh (kept in sync with simple_dump.sh)
+
+# tables dumped by simple_dump.sh, per database (kept in sync with simple_dump.sh)
 included_tables_per_db <- list(
   hap_hcdo = c("hap_analytics_historical_data", "hap_analytics_holidays", "hap_analytics_resources"),
   kwaliteitskaderapp = c("client_info", "document", "framework", "provider", "status"),
@@ -156,25 +156,15 @@ included_tables_per_db <- list(
                        "simulation", "simulation_request", "spatial_ref_sys")
 )
 
-total_bytes <- 0
-
 for (db_name in names(included_tables_per_db)) {
   connections <- db_connect(db_name, preset = "postgres_application_admin")
+  table_names <- connections$info$tables()$table_name
+  table_names <- sub("^public\\.", "", table_names)
 
-  tables <- included_tables_per_db[[db_name]]
-  size_result <- connections$query(
-    "SELECT COALESCE(SUM(pg_total_relation_size(t)), 0) AS bytes
-     FROM unnest({tables}::text[]) AS raw_name, LATERAL (SELECT to_regclass(raw_name) AS t) r
-     WHERE t IS NOT NULL",
-    params = list(tables = SQL(paste0("ARRAY[", paste0("'", tables, "'", collapse = ","), "]")))
-  )
+  excluded_table_names <- table_names[!table_names %in% included_tables_per_db[[db_name]]]
 
-  db_bytes <- size_result$bytes[1]
-  total_bytes <- total_bytes + db_bytes
-
-  cat("Database: ", db_name, " - ", format(db_bytes / 1024^2, big.mark = ",", nsmall = 1), " MB\n")
+  cat("Database: ", db_name, "\n")
+  cat(paste0(excluded_table_names, collapse = "\n"), "\n\n")
 
   connections$disconnect()
 }
-
-cat("\nTotal size of tables in simple_dump.sh: ", format(total_bytes / 1024^3, big.mark = ",", nsmall = 2), " GB\n")
