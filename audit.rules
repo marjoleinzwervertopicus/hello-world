@@ -403,9 +403,9 @@
 -w /var/lib/snapd/snaps -p wa -k snap_install
 
 ## Container configuration
--w /var/lib/docker -p wa -k docker
--w /etc/docker -p wa -k docker
--w /etc/containers/ -p wa -k containers
+#-w /var/lib/docker -p wa -k docker
+#-w /etc/docker -p wa -k docker
+#-w /etc/containers/ -p wa -k containers
 
 # ipc system call
 # /usr/include/linux/ipc.h
