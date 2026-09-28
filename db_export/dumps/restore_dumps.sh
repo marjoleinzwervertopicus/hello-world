@@ -1,16 +1,31 @@
 #!/bin/bash
 set -euo pipefail
 
-# Usage: restore_dumps.sh <mode>
+# Usage: restore_dumps.sh <mode> [db_name ...]
 #   all      drop the dumped tables and restore every dump
 #   missing  drop nothing; only restore dumps into databases that have no tables yet
+#   db_name  only restore these databases (default: every *.dump in this directory)
 MODE="${1:-}"
 if [[ "$MODE" != "all" && "$MODE" != "missing" ]]; then
-    echo "Usage: $0 all|missing" >&2
+    echo "Usage: $0 all|missing [db_name ...]" >&2
     exit 1
 fi
+shift
 
 DB_DIR="$(dirname "$0")"
+
+if [[ $# -gt 0 ]]; then
+    DUMPS=()
+    for db in "$@"; do
+        if [[ ! -f "$DB_DIR/$db.dump" ]]; then
+            echo "No dump found for $db: $DB_DIR/$db.dump" >&2
+            exit 1
+        fi
+        DUMPS+=("$DB_DIR/$db.dump")
+    done
+else
+    DUMPS=("$DB_DIR"/*.dump)
+fi
 
 # Count user tables, ignoring system schemas and tables that belong to an extension (e.g. PostGIS spatial_ref_sys)
 count_tables() {
@@ -27,7 +42,7 @@ count_tables() {
           );"
 }
 
-for dump in "$DB_DIR"/*.dump; do
+for dump in "${DUMPS[@]}"; do
     DB_NAME="$(basename "$dump" .dump)"
 
     if [[ "$MODE" == "all" ]]; then
