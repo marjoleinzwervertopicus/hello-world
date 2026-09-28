@@ -1,0 +1,1 @@
+rsync -avP -e "ssh -i /home/devise/.ssh/id_rsa" devise@146.185.165.69:/home/marjolein/RStudio/hello-world/db_export/dumps/ /home/users/marjolein@devise.nl/dumps
