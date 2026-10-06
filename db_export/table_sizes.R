@@ -165,9 +165,9 @@ for (db_name in names(included_tables_per_db)) {
   db_bytes <- size_result$bytes[1]
   total_bytes <- total_bytes + db_bytes
 
-  cat("Database: ", db_name, " - ", format(db_bytes / 1024^2, big.mark = ",", nsmall = 1), " MB\n")
+  cat("Database: ", db_name, " - ", format(round(db_bytes / 1024^3, 2), big.mark = ",", nsmall = 2), " GB\n")
 
   connections$disconnect()
 }
 
-cat("\nTotal size of tables in simple_dump.sh: ", format(total_bytes / 1024^3, big.mark = ",", nsmall = 2), " GB\n")
+cat("\nTotal size of tables in simple_dump.sh: ", format(round(total_bytes / 1024^3, 2), big.mark = ",", nsmall = 2), " GB\n")

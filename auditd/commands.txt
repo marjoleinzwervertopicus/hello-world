@@ -1,0 +1,13 @@
+sudo systemctl start auditd
+sudo systemctl status auditd
+sudo systemctl stop auditd
+
+sudo augenrules --load
+
+bash /home/users/marjolein@devise.nl/RStudio/hello-world/auditd/copy_rules.sh
+sudo ls -lah /mnt/volume_block_1/auditd_logs/
+
+
+sudo truncate -s 0 /mnt/volume_block_1/auditd_logs/audit.log
+
+15:49

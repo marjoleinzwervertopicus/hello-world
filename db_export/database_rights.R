@@ -8,9 +8,10 @@ querytool_users <- c(
 
 for(database in names(querytool_users)) {
   querytool_user <- querytool_users[[database]]
-  connections <- db_connect(database, preset = "postgres_production_admin")
+  connections <- db_connect(database, preset = "postgres_production")
   # connections$query(paste0("GRANT CONNECT ON DATABASE ", database, " TO \"", querytool_user, "\""), get = F)
   # connections$query(paste0("GRANT USAGE ON SCHEMA public TO \"", querytool_user, "\""), get = F)
   connections$query(paste0("GRANT SELECT ON ritten_edazng_raw TO \"", querytool_user, "\""), get = F)
+  connections$query(paste0("GRANT SELECT ON ritten_edazng TO \"", querytool_user, "\""), get = F)
   connections$disconnect()
 }

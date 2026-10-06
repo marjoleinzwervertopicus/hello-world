@@ -1,9 +1,9 @@
 library(db)
 
-client_name <- "mknn"
+client_name <- "rav_fryslan"
 Sys.setenv("DEVISE_DB_USER" = "postgres")
 
-table_name <- "v_a_arc_melding"
+table_name <- "show_tracks_webfleet"
 
 connections <- db_connect(client_name, preset = "postgres_etl_server")
 
