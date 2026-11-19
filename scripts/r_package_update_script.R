@@ -17,7 +17,7 @@ explicit_package_names <- c("withr", "shiny", "blastula", "bookdown", "bslib", "
 
 
 
-lines <- readLines("~/Docker/devise-ubuntu/setup/install_r_packages.sh")
+lines <- readLines("~/Docker/x/setup/install_r_packages.sh")
 
 lines <- lines[grepl("install_version", lines)]
 

@@ -3,7 +3,7 @@
 # bestanden in test blijven staan. Zet dry_run op FALSE om echt te kopiëren.
 src_root <- "/home/devise/insights/production"
 dest_root <- "/home/devise/insights/test"
-dry_run <- F
+dry_run <- T
 
 #18 clients
 clients <- c(
