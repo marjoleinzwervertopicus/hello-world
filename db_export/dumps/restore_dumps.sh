@@ -42,12 +42,23 @@ count_tables() {
           );"
 }
 
+# Databases whose objects must be owned by an application role rather than postgres
+declare -A OWNER_ROLES=(
+    [dagster]=dagster
+)
+
 for dump in "${DUMPS[@]}"; do
     DB_NAME="$(basename "$dump" .dump)"
 
+    # --role makes pg_restore SET ROLE after connecting, so restored objects are owned by that role
+    ROLE_ARGS=()
+    if [[ -n "${OWNER_ROLES[$DB_NAME]:-}" ]]; then
+        ROLE_ARGS=(--role="${OWNER_ROLES[$DB_NAME]}")
+    fi
+
     if [[ "$MODE" == "all" ]]; then
         echo "Restoring $dump into $DB_NAME (clean)..."
-        pg_restore --exit-on-error --clean --if-exists --no-owner --no-privileges -U postgres -d "$DB_NAME" "$dump"
+        pg_restore --exit-on-error --clean --if-exists --no-owner --no-privileges "${ROLE_ARGS[@]}" -U postgres -d "$DB_NAME" "$dump"
     else
         TABLE_COUNT="$(count_tables "$DB_NAME")"
         if [[ "$TABLE_COUNT" -gt 0 ]]; then
@@ -55,6 +66,6 @@ for dump in "${DUMPS[@]}"; do
             continue
         fi
         echo "Restoring $dump into $DB_NAME..."
-        pg_restore --exit-on-error --no-owner --no-privileges -U postgres -d "$DB_NAME" "$dump"
+        pg_restore --exit-on-error --no-owner --no-privileges "${ROLE_ARGS[@]}" -U postgres -d "$DB_NAME" "$dump"
     fi
 done
